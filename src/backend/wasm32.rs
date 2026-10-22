@@ -13,7 +13,7 @@ use crate::{seal::Sealed, Scalar, WithSimd};
 
 use super::{
     arch::{impl_simd, NullaryFnOnce},
-    cast, impl_cmp_scalar, wrapping_mul, Simd, VRegister, Vector,
+    cast, impl_cmp_scalar, impl_fma_scalar, wrapping_mul, Simd, VRegister, Vector,
 };
 
 impl Sealed for v128 {}
@@ -532,6 +532,8 @@ where
     fn mul_add_f64_supported() -> bool {
         true
     }
+    // wasm SIMD has no fused multiply-add; relaxed `madd` may round twice.
+    impl_fma_scalar!(16, f32, f64);
 }
 
 impl Simd128Fallback {
