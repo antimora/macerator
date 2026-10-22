@@ -410,6 +410,9 @@ where
     }
     impl_unop!(abs, _mm512_abs, i8, i16, i32, i64, f32, f64);
     impl_unop!(sqrt, _mm512_sqrt, f32, f64);
+    impl_shift!(shl, _mm512_sll, u16, i16, u32, i32, u64, i64);
+    impl_shift!(shr, _mm512_srl, u16, u32, u64);
+    impl_shift!(shr, _mm512_sra, i16, i32, i64);
 
     impl_reduce_signless!(reduce_add, _mm512_reduce_add, u32, i32, u64, i64, f32, f64);
     impl_reduce!(reduce_min, _mm512_reduce_min, u32, i32, u64, i64, f32, f64);

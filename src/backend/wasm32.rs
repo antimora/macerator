@@ -135,6 +135,20 @@ macro_rules! impl_reduce_scalar {
     };
 }
 
+macro_rules! impl_shift {
+    ($func: ident, $($ty: ident: $intrinsic: ident),*) => {
+        $(paste! {
+            #[inline(always)]
+            fn [<$func _ $ty>](a: Self::Register, n: u32) -> Self::Register {
+                unsafe { $intrinsic(a, n) }
+            }
+            #[inline(always)]
+            fn [<$func _ $ty _supported>]() -> bool {
+                true
+            }
+        })*
+    };
+}
 macro_rules! lanes {
     ($($bits: literal),*) => {
         $(paste! {
@@ -261,6 +275,11 @@ where
     impl_unop_scalar!(recip, recip, f16, f32, f64);
     impl_unop!(sqrt, sqrt, f32 x 4, f64 x 2);
     impl_unop_scalar!(sqrt, sqrt, f16);
+
+    impl_shift!(shl, u16: i16x8_shl, i16: i16x8_shl, u32: i32x4_shl, i32: i32x4_shl);
+    impl_shift!(shl, u64: i64x2_shl, i64: i64x2_shl);
+    impl_shift!(shr, u16: u16x8_shr, i16: i16x8_shr, u32: u32x4_shr, i32: i32x4_shr);
+    impl_shift!(shr, u64: u64x2_shr, i64: i64x2_shr);
 
     impl_reduce_scalar!(
         reduce_add,

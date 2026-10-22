@@ -96,6 +96,9 @@ impl Simd for Lasx {
     impl_unop_scalar!(recip, recip, f16);
     impl_unop!(sqrt, lasx_xvfsqrt, f32, f64);
     impl_unop_scalar!(sqrt, sqrt, f16);
+    impl_shift!(shl, lasx_xvsll, u16: 16, i16: 16, u32: 32, i32: 32, u64: 64, i64: 64);
+    impl_shift!(shr, lasx_xvsrl, u16: 16, u32: 32, u64: 64);
+    impl_shift!(shr, lasx_xvsra, i16: 16, i32: 32, i64: 64);
 
     impl_cmp_signless!(equals, lasx_xvseq, u8, i8, u16, i16, u32, i32, u64, i64);
     impl_cmp_signless!(equals, lasx_xvfcmp_ceq, f32, f64);

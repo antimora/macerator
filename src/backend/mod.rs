@@ -173,6 +173,14 @@ macro_rules! declare_unop {
     };
 }
 
+macro_rules! declare_shift {
+    ($name: ident, $($ty: ty),*) => {
+        $(paste! {
+            fn [<$name _ $ty>](a: Self::Register, n: u32) -> Self::Register;
+            fn [<$name _ $ty _supported>]() -> bool;
+        })*
+    };
+}
 macro_rules! declare_reduction {
     ($name: ident, $($ty: ty),*) => {
         $(paste! {
@@ -452,6 +460,12 @@ pub trait Simd: Sized + seal::Sealed + 'static {
 
     declare_unop!(recip, f16, f32, f64);
     declare_unop!(sqrt, f16, f32, f64);
+
+    // Shifts every lane by `n` bits. `n` must be less than the lane width:
+    // backends disagree about larger counts. Right shifts are logical for
+    // unsigned lanes and arithmetic for signed ones.
+    declare_shift!(shl, u16, i16, u32, i32, u64, i64);
+    declare_shift!(shr, u16, i16, u32, i32, u64, i64);
     declare_unop!(abs, i8, i16, i32, i64, f16, f32, f64);
 
     declare_reduction!(reduce_add, i8, i16, i32, i64, u8, u16, u32, u64, f16, f32, f64);
